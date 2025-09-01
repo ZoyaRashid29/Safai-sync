@@ -1,0 +1,23 @@
+[
+    {
+        "truck_id": "Kah-123",
+        "driver_name": "Zoya Rashid",
+        "phone_no": "923497689495",
+        "status": "Available",
+        "area": "Kahuta"
+    },
+    {
+        "truck_id": "LHR-456",
+        "driver_name": "Bilal Ahmed",
+        "phone_no": "923217654321",
+        "status": "Available",
+        "area": "Johar Town"
+    },
+    {
+        "truck_id": "kah-789",
+        "driver_name": "Saqib Javed",
+        "phone_no": "923315067595",
+        "status": "Busy",
+        "area": "kahuta"
+    }
+]

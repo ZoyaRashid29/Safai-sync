@@ -1,0 +1,16 @@
+
+[theme]
+# Aapke logo se milta julta primary color
+primaryColor="#198754"
+
+# Background color ko halka sa off-white rakhenge
+backgroundColor="#F0F2F6"
+
+# Widgets (jaise sidebar) ka background color
+secondaryBackgroundColor="#FFFFFF"
+
+# Text ka color
+textColor="#31333F"
+
+# Font (Saada aur minimal) - YAQEENAN QUOTES MEIN HONA CHAHIYE
+font="sans serif"
