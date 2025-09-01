@@ -13,8 +13,8 @@ from streamlit_option_menu import option_menu
 from PIL import Image
 from streamlit_geolocation import streamlit_geolocation
 from geopy.geocoders import Nominatim
-import pywhatkit
 from datetime import datetime
+from twilio.rest import Client
 
 
 # ======================
@@ -86,36 +86,21 @@ def get_address_from_coords(lat, lon):
 # ======================
 # WHATSAPP HELPER FUNCTION (pywhatkit)
 # ======================
-def send_whatsapp_message_pywhatkit(phone_no, message):
-    """
-    pywhatkit istemal karke WhatsApp message bhejta hai. (Corrected version)
-    """
+def send_sms_twilio(phone_no, message):
     try:
-        full_phone_no = f"+{phone_no}"
-        
-        now = datetime.now()
-        hr = now.hour
-        min = now.minute + 2 # 2 minute aage ka time
-
-        pywhatkit.sendwhatmsg(
-            full_phone_no,      # Pehla argument hamesha phone number
-            message,            # Doosra argument hamesha message
-            hr, 
-            min,
-            wait_time=20,
-            tab_close=True
+        client = Client(
+            st.secrets.get("TWILIO_ACCOUNT_SID"),
+            st.secrets.get("TWILIO_AUTH_TOKEN")
         )
-        
-        print(f"WhatsApp message successfully scheduled for {full_phone_no}")
+        message_obj = client.messages.create(
+            body=message,
+            from_=st.secrets.get("TWILIO_PHONE_NUMBER"),
+            to=f"+{phone_no}"  # Country code zaroor add karein
+        )
+        print(f"SMS successfully sent to {phone_no}, SID: {message_obj.sid}")
         return True
     except Exception as e:
-        error_message = str(e)
-        if "No browser found" in error_message:
-            st.error("WhatsApp Error: Google Chrome aapke computer par install nahi hai. Baraye meharbani pehle Chrome install karein.")
-        else:
-            # Error ko user-friendly tareeqe se dikhayein
-            st.error(f"WhatsApp message bhejte waqt masla hua: {error_message}")
-        print(f"Error sending WhatsApp message with pywhatkit: {error_message}")
+        st.error(f"SMS bhejte waqt masla hua: {e}")
         return False
 # ======================
 # IMAGE COMPRESSION
@@ -600,7 +585,7 @@ def show_report_form():
                                 f"🗺️ Maps Link: {maps_link}\n\n"
                                 f"Baraye meharbani fori karwai karein."
                             )
-                            send_whatsapp_message_pywhatkit(driver_phone, message_body)
+                            send_sms_twilio(driver_phone, message_body)
                             st.success("✅ Driver ko notification bhej diya gaya hai!")
 
                         else:
@@ -770,7 +755,7 @@ def show_admin_panel():
                             st.info(f"Driver {driver_name} ko WhatsApp bheja ja raha hai... (Isme 1-2 minute lag sakte hain)")
                             
                             # 5. Hamara helper function call karein jo message bhejega
-                            success = send_whatsapp_message_pywhatkit(driver_phone, message_body)
+                            success = send_sms_twilio(driver_phone, message_body)
                             
                             if success:
                                 st.success("✅ Driver ko WhatsApp notification schedule ho gaya hai! Browser check karein.")
